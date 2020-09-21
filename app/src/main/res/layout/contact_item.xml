@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="contact"
-            type="my.portfolio.contactsapp.adapters.Contact" />
+            type="my.portfolio.contactsapp.Contact" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,6 +20,29 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="20dp"
             android:text="@{contact.name}"
-            android:textSize="15sp" />
-    </com.google.android.material.card.MaterialCardView>
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/contactNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="20dp"
+            android:text="@{contact.numbers[0]}"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/contactName" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="20dp"
+            android:text="@{contact.emails[0]}"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/contactNumber" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import my.portfolio.contactsapp.Contact
 import my.portfolio.contactsapp.databinding.ContactItemBinding
 
 class ContactsAdapter : ListAdapter<Contact, ContactsAdapter.ContactViewHolder>(DiffCallback) {
@@ -24,7 +25,7 @@ class ContactsAdapter : ListAdapter<Contact, ContactsAdapter.ContactViewHolder>(
         }
 
         override fun areContentsTheSame(oldItem: Contact, newItem: Contact): Boolean {
-            return oldItem.number == newItem.number
+            return oldItem.id == newItem.id
         }
 
     }
