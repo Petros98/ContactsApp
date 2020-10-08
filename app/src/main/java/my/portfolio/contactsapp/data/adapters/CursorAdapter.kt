@@ -1,4 +1,4 @@
-package my.portfolio.contactsapp.adapters
+package my.portfolio.contactsapp.data.adapters
 
 import android.database.Cursor
 import android.database.DataSetObserver

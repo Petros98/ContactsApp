@@ -1,20 +1,22 @@
-package my.portfolio.contactsapp.adapters
+package my.portfolio.contactsapp.data.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import my.portfolio.contactsapp.Contact
+import my.portfolio.contactsapp.data.models.Contact
 import my.portfolio.contactsapp.databinding.ContactItemBinding
 
-class ContactsAdapter : ListAdapter<Contact, ContactsAdapter.ContactViewHolder>(DiffCallback) {
+class ContactsAdapter(val onItemClickListener: OnItemClickListener) :
+    ListAdapter<Contact, ContactsAdapter.ContactViewHolder>(DiffCallback) {
 
 
-    class ContactViewHolder(private var binding: ContactItemBinding) :
+    inner class ContactViewHolder(private var binding: ContactItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: Contact) {
             binding.contact = contact
+            binding.root.rootView.setOnClickListener { onItemClickListener.onClick(contact) }
             binding.executePendingBindings()
         }
     }
@@ -39,4 +41,9 @@ class ContactsAdapter : ListAdapter<Contact, ContactsAdapter.ContactViewHolder>(
         val contact = getItem(position)
         holder.bind(contact)
     }
+
+}
+
+interface OnItemClickListener {
+    fun onClick(contact: Contact)
 }

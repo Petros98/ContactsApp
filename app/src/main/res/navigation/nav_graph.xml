@@ -7,15 +7,42 @@
 
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="my.portfolio.contactsapp.ContactsFragment"
+        android:name="my.portfolio.contactsapp.ui.ContactsFragment"
         android:label="ContactsFragment">
+
         <action
             android:id="@+id/action_contactsFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <argument
+            android:name="newContact"
+            app:argType="my.portfolio.contactsapp.data.models.NewContact" />
+        <action
+            android:id="@+id/action_contactsFragment_to_newContactFragment"
+            app:destination="@id/newContactFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="my.portfolio.contactsapp.DetailsFragment"
+        android:name="my.portfolio.contactsapp.ui.DetailsFragment"
         android:label="fragment_details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="contact"
+            app:argType="my.portfolio.contactsapp.data.models.Contact" />
+    </fragment>
+    <fragment
+        android:id="@+id/newContactFragment"
+        android:name="my.portfolio.contactsapp.ui.NewContactFragment"
+        android:label="NewContactFragment">
+        <action
+            android:id="@+id/action_newContactFragment_to_contactsFragment2"
+            app:destination="@id/contactsFragment" />
+    </fragment>
 </navigation>

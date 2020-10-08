@@ -1,22 +1,17 @@
-package my.portfolio.contactsapp
+package my.portfolio.contactsapp.data
 
 import android.app.Activity
+import android.content.Intent
 import android.database.Cursor
 import android.provider.ContactsContract
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import my.portfolio.contactsapp.data.models.Contact
 
-class ContactsViewModel(private val activity: Activity) : ViewModel() {
+class ContactsRepository {
 
-    private val _contacts: MutableLiveData<ArrayList<Contact>> = MutableLiveData()
-    val contacts: LiveData<ArrayList<Contact>>
-        get() = _contacts
-
-    fun fetchContacts() {
-        val contactsList = getPhoneContacts()
-        val contactNumbers = getContactNumbers()
-        val contactEmail = getContactEmails()
+    fun fetchContacts(activity: Activity): ArrayList<Contact> {
+        val contactsList = getPhoneContacts(activity)
+        val contactNumbers = getContactNumbers(activity)
+        val contactEmail = getContactEmails(activity)
 
 
         contactsList.forEach {
@@ -27,11 +22,10 @@ class ContactsViewModel(private val activity: Activity) : ViewModel() {
                 it.emails = emails
             }
         }
-        _contacts.postValue(contactsList)
-
+        return contactsList
     }
 
-    private fun getPhoneContacts(): ArrayList<Contact> {
+    private fun getPhoneContacts(activity: Activity): ArrayList<Contact> {
         val contactsList = ArrayList<Contact>()
         val contactsCursor: Cursor? = activity.contentResolver?.query(
             ContactsContract.Contacts.CONTENT_URI,
@@ -42,12 +36,20 @@ class ContactsViewModel(private val activity: Activity) : ViewModel() {
         )
         if (contactsCursor != null && contactsCursor.count > 0) {
             val idIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts._ID)
+            val imageUriIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)
             val nameIndex = contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
             while (contactsCursor.moveToNext()) {
                 val id = contactsCursor.getString(idIndex)
                 val name = contactsCursor.getString(nameIndex)
+                val imageUri = contactsCursor.getString(imageUriIndex)
                 if (name != null) {
-                    contactsList.add(Contact(id, name))
+                    contactsList.add(
+                        Contact(
+                            id,
+                            name,
+                            imageUri
+                        )
+                    )
                 }
             }
             contactsCursor.close()
@@ -55,7 +57,7 @@ class ContactsViewModel(private val activity: Activity) : ViewModel() {
         return contactsList
     }
 
-    private fun getContactNumbers(): Map<String, ArrayList<String>> {
+    private fun getContactNumbers(activity: Activity): Map<String, ArrayList<String>> {
         val contactsNumberMap = mutableMapOf<String, ArrayList<String>>()
         val phoneCursor: Cursor? = activity.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -83,7 +85,7 @@ class ContactsViewModel(private val activity: Activity) : ViewModel() {
         return contactsNumberMap
     }
 
-    private fun getContactEmails(): Map<String, ArrayList<String>> {
+    private fun getContactEmails(activity: Activity): Map<String, ArrayList<String>> {
         val contactsEmailMap = mutableMapOf<String, ArrayList<String>>()
         val emailCursor = activity.contentResolver.query(
             ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -110,4 +112,24 @@ class ContactsViewModel(private val activity: Activity) : ViewModel() {
         }
         return contactsEmailMap
     }
+
+    fun addContact(activity: Activity, name: String, number: String): Boolean {
+        val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
+            type = ContactsContract.RawContacts.CONTENT_TYPE
+        }
+        intent.apply {
+            putExtra(ContactsContract.Intents.Insert.PHONE, number)
+            putExtra(ContactsContract.Intents.Insert.NAME, name)
+            putExtra(
+                ContactsContract.Intents.Insert.PHONE_TYPE,
+                ContactsContract.CommonDataKinds.Phone.TYPE_WORK
+            )
+            activity.startActivityForResult(this, 1)
+
+        }
+        return true
+
+    }
+
+    fun editContact() {}
 }
