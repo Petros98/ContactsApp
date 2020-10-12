@@ -8,7 +8,7 @@ data class Contact(
     val name: String = "",
     val imageUri: String?
 ) : Serializable {
-    var primaryNumber: String = ""
     var numbers = ArrayList<String>()
     var emails = ArrayList<String>()
+    var primaryNumber: String = numbers.firstOrNull() ?: ""
 }

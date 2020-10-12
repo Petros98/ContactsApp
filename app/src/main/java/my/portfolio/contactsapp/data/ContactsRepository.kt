@@ -3,8 +3,11 @@ package my.portfolio.contactsapp.data
 import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.provider.ContactsContract
+import android.provider.ContactsContract.PhoneLookup
 import my.portfolio.contactsapp.data.models.Contact
+
 
 class ContactsRepository {
 
@@ -129,6 +132,40 @@ class ContactsRepository {
         }
         return true
 
+    }
+
+    fun deleteContact(activity: Activity, contact: Contact): Boolean {
+        val contactUri: Uri =
+            Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(contact.numbers[0]))
+        val cur: Cursor? = activity.contentResolver
+            .query(contactUri, null, null, null, null)
+            ?.apply {
+                try {
+                    if (moveToFirst()) {
+                        do {
+                            if (getString(getColumnIndex(PhoneLookup.DISPLAY_NAME))
+                                    .equals(contact.name, ignoreCase = true)
+                            ) {
+                                val lookupKey =
+                                    getString(getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+                                val uri: Uri = Uri.withAppendedPath(
+                                    ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                    lookupKey
+                                )
+                                activity.contentResolver.delete(uri, null, null)
+                                return true
+                            }
+                        } while (moveToNext())
+                    }
+                } catch (e: Exception) {
+                    println(e.stackTrace)
+                } finally {
+                    close()
+                }
+            }
+        cur?.close()
+
+        return false
     }
 
     fun editContact() {}

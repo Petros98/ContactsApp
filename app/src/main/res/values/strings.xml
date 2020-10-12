@@ -11,11 +11,17 @@
     <string name="contacts">Contacts</string>
     <string name="search">Search</string>
     <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
     <string name="name">Name</string>
     <string name="Number">Number</string>
     <string name="save">Save</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contactSaved">Contact Saved</string>
     <string name="failedSaving">Failed</string>
+    <string name="deleteContact">Delete Contact</string>
+    <string name="areYouSure">are you sure?</string>
+    <string name="delete">Delete</string>
+    <string name="deleted">Deleted</string>
+    <string name="failed">Failed</string>
+    <string name="cancel">cancel</string>
+    <string name="canceled">canceled</string>
 </resources>

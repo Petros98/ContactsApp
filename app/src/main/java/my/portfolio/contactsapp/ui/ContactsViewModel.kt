@@ -23,6 +23,14 @@ class ContactsViewModel : ViewModel() {
         _contacts.postValue(contactsRepository.fetchContacts(activity))
     }
 
+    fun deleteContact(activity: Activity, contact: Contact): Boolean {
+        val res = contactsRepository.deleteContact(activity, contact)
+        if (res) {
+            _contacts.value?.remove(contact)
+        }
+        return res
+    }
+
     fun displayContactDetails(contact: Contact) {
         _navigateToSelectedProperty.value = contact
     }

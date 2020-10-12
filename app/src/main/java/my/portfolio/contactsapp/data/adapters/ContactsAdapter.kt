@@ -17,6 +17,7 @@ class ContactsAdapter(val onItemClickListener: OnItemClickListener) :
         fun bind(contact: Contact) {
             binding.contact = contact
             binding.root.rootView.setOnClickListener { onItemClickListener.onClick(contact) }
+            binding.root.rootView.setOnLongClickListener { onItemClickListener.onLongClick(contact) }
             binding.executePendingBindings()
         }
     }
@@ -46,4 +47,5 @@ class ContactsAdapter(val onItemClickListener: OnItemClickListener) :
 
 interface OnItemClickListener {
     fun onClick(contact: Contact)
+    fun onLongClick(contact: Contact): Boolean
 }

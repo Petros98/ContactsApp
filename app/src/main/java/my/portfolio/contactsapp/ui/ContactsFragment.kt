@@ -1,10 +1,12 @@
 package my.portfolio.contactsapp.ui
 
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.core.widget.doAfterTextChanged
@@ -19,9 +21,7 @@ import my.portfolio.contactsapp.data.adapters.OnItemClickListener
 import my.portfolio.contactsapp.data.models.Contact
 import my.portfolio.contactsapp.databinding.FragmentContactsBinding
 
-
 class ContactsFragment : Fragment(), OnItemClickListener {
-
 
     private lateinit var binding: FragmentContactsBinding
     private val viewModel: ContactsViewModel by viewModels()
@@ -49,7 +49,6 @@ class ContactsFragment : Fragment(), OnItemClickListener {
                 )
                 viewModel.displayDetailsComplete()
             }
-
         })
         return binding.root
     }
@@ -75,7 +74,6 @@ class ContactsFragment : Fragment(), OnItemClickListener {
                         myPermissions[2]
                     ) == PERMISSION_GRANTED
 
-
         if (!isGranted)
             requestPermissions(myPermissions, requestCode)
         else
@@ -97,7 +95,6 @@ class ContactsFragment : Fragment(), OnItemClickListener {
             findNavController().navigate(R.id.action_contactsFragment_to_newContactFragment)
         }
 
-
     }
 
     override fun onRequestPermissionsResult(
@@ -115,4 +112,37 @@ class ContactsFragment : Fragment(), OnItemClickListener {
 
 
     override fun onClick(contact: Contact) = viewModel.displayContactDetails(contact)
+
+    override fun onLongClick(contact: Contact): Boolean {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.deleteContact))
+            .setMessage(getString(R.string.areYouSure))
+            .setCancelable(true)
+            .setPositiveButton(
+                getString(R.string.delete)
+            ) { _, _ ->
+                val result = viewModel.deleteContact(requireActivity(), contact)
+                if (result) {
+                    adapter.notifyDataSetChanged()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.deleted),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.failed),
+                        Toast.LENGTH_LONG
+                    ).show()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                Toast.makeText(requireContext(), getString(R.string.canceled), Toast.LENGTH_LONG)
+                    .show()
+            }
+            .create()
+            .show()
+        return true
+    }
+
 }
